@@ -1,13 +1,10 @@
-import path from 'path';
-import rmdir from 'rmdir';
+import { cleanDir } from './lib/fs';
 
-const binDir = path.join(__dirname, '../bin');
-rmdir(binDir, (err) => {
-  if (err) {
-    if (err.code === 'ENOENT') {
-      return; // Directory already gone
-    }
-    console.error(err);
-    process.exit(1);
-  }
-});
+function clean() {
+  return cleanDir('build/*', {
+    nosort: true,
+    dot: true,
+  });
+}
+
+export default clean;
