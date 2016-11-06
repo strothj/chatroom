@@ -1,12 +1,13 @@
 {
   "name": "chatroom",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/main.js",
   "author": "strothj <jason@jasons.io>",
   "license": "MIT",
   "scripts": {
+    "build": "babel-node tools/run build",
     "clean": "babel-node tools/run clean",
-    "start": "node build/main.js"
+    "start": "node build/server.js"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -19,9 +20,11 @@
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.3.0",
+    "extend": "^3.0.0",
     "glob": "^7.1.1",
     "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "webpack": "^1.13.3"
   },
   "dependencies": {
     "express": "^4.14.0",
