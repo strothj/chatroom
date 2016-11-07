@@ -2,7 +2,7 @@ import path from 'path';
 import extend from 'extend';
 import webpack from 'webpack';
 
-const configBase = {
+const config = {
   context: path.join(__dirname, '../src'),
   loaders: [
     {
@@ -23,7 +23,7 @@ const configBase = {
   },
 };
 
-const serverConfig = extend(true, {}, configBase, {
+const serverConfig = extend(true, {}, config, {
   entry: './server.js',
 
   output: {
@@ -57,7 +57,23 @@ const serverConfig = extend(true, {}, configBase, {
   },
 });
 
-const clientConfig = extend(true, {}, configBase);
+const clientConfig = extend(true, {}, config, {
+  entry: './client.js',
+
+  output: {
+    // filename: '[name].[chunkhash].js',
+    // chunkFilename: '[name].[id].[chunkhash].js',
+    filename: 'build/public/js/chatroom-bundle.js',
+  },
+
+  target: 'web',
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BROWSER': true,
+    }),
+  ],
+});
 
 // export default [clientConfig, serverConfig];
-export default [serverConfig];
+export default [clientConfig, serverConfig];
