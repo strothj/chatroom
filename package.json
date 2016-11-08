@@ -8,7 +8,9 @@
     "build": "babel-node tools/run build",
     "clean": "babel-node tools/run clean",
     "lint": "eslint src tools",
-    "start": "node build/server.js"
+    "start": "node build/server.js",
+    "test": "mocha \"src/**/*.test.js\" --require babel-register",
+    "test:watch": "npm run test -- --reporter min --watch"
   },
   "engines": {
     "node": ">=6.9"
@@ -33,6 +35,7 @@
     "glob": "^7.1.1",
     "html-webpack-plugin": "^2.24.1",
     "mkdirp": "^0.5.1",
+    "mocha": "^3.1.2",
     "rimraf": "^2.5.4",
     "webpack": "^1.13.3"
   },
@@ -54,7 +57,8 @@
       "commonjs": true,
       "es6": true,
       "node": true,
-      "jquery": true
+      "jquery": true,
+      "mocha": true
     },
     "globals": {
       "io": true
