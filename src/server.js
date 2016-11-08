@@ -9,10 +9,10 @@ const server = new http.Server(app);
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-  console.log('Client connected');
+  console.log('Client connected'); // eslint-disable-line no-console
 
   socket.on('message', (message) => {
-    console.log('Received message:', message);
+    console.log('Received message:', message); // eslint-disable-line no-console
     socket.broadcast.emit('message', message);
   });
 });

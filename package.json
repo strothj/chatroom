@@ -7,6 +7,7 @@
   "scripts": {
     "build": "babel-node tools/run build",
     "clean": "babel-node tools/run clean",
+    "lint": "eslint src tools",
     "start": "node build/server.js"
   },
   "engines": {
@@ -54,6 +55,9 @@
       "es6": true,
       "node": true,
       "jquery": true
+    },
+    "globals": {
+      "io": true
     },
     "parserOptions": {
       "ecmaFeatures": {
