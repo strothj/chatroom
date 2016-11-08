@@ -50,6 +50,21 @@ const config = {
     ],
   },
 
+  cache: isDebug,
+  debug: isDebug,
+
+  stats: {
+    colors: true,
+    reasons: isDebug,
+    hash: isVerbose,
+    version: isVerbose,
+    timings: true,
+    chunks: isVerbose,
+    chunkModules: isVerbose,
+    cached: isVerbose,
+    cachedAssets: isVerbose,
+  },
+
   resolve: {
     root: path.resolve(__dirname, '../src'),
     modulesDirectories: ['node_modules'],
