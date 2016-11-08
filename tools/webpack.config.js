@@ -105,6 +105,8 @@ const clientConfig = extend(true, {}, config, {
       processOutput: x => `module.exports = ${JSON.stringify(x)};`,
     }),
 
+    // Add link to JavaScript bundle to index.html
+    // https://www.npmjs.com/package/html-webpack-plugin
     new HtmlPlugin({
       template: path.resolve(__dirname, '../assets/index.html'),
       inject: 'body',
