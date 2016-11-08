@@ -9,6 +9,9 @@
     "clean": "babel-node tools/run clean",
     "start": "node build/server.js"
   },
+  "engines": {
+    "node": ">=6.9"
+  },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.0",
     "babel-cli": "^6.18.0",
@@ -35,5 +38,30 @@
     "express": "^4.14.0",
     "socket.io": "^1.5.1",
     "source-map-support": "^0.4.6"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-async-to-generator",
+      "babel-plugin-syntax-async-functions"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true,
+      "node": true,
+      "jquery": true
+    },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "sourceType": "module"
+    },
+    "rules": {
+    },
+    "extends": "airbnb"
   }
 }
