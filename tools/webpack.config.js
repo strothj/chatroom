@@ -2,6 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import extend from 'extend';
 import AssetsPlugin from 'assets-webpack-plugin';
+import HtmlPlugin from 'html-webpack-plugin';
 
 const isDebug = !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose');
@@ -102,6 +103,12 @@ const clientConfig = extend(true, {}, config, {
       path: path.resolve(__dirname, '../build'),
       filename: 'assets.js',
       processOutput: x => `module.exports = ${JSON.stringify(x)};`,
+    }),
+
+    new HtmlPlugin({
+      template: path.resolve(__dirname, '../assets/index.html'),
+      inject: 'body',
+      filename: '../index.html',
     }),
 
     // Assign the module and chunk ids by occurrence count
