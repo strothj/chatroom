@@ -124,6 +124,10 @@ const clientConfig = extend(true, {}, config, {
       }),
     ],
   ],
+
+  // Choose a developer tool to enhance debugging
+  // http://webpack.github.io/docs/configuration.html#devtool
+  devtool: isDebug ? 'source-map' : false,
 });
 
 //
@@ -138,11 +142,7 @@ const serverConfig = extend(true, {}, config, {
     libraryTarget: 'commonjs2',
   },
 
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.BROWSER': false,
-    }),
-  ],
+  target: 'node',
 
   externals: [
     /^\.\/assets$/,
@@ -154,6 +154,25 @@ const serverConfig = extend(true, {}, config, {
     },
   ],
 
+  plugins: [
+    // Define free variables
+    // https://webpack.github.io/docs/list-of-plugins.html#defineplugin
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
+      'process.env.BROWSER': false,
+      __DEV__: isDebug,
+    }),
+
+    // Adds a banner to the top of each generated chunk
+    // https://webpack.github.io/docs/list-of-plugins.html#bannerplugin
+    new webpack.BannerPlugin('require("source-map-support").install();',
+      { raw: true, entryOnly: false }),
+
+    // Do not create separate chunks of the server bundle
+    // https://webpack.github.io/docs/list-of-plugins.html#limitchunkcountplugin
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+  ],
+
   node: {
     console: false,
     global: false,
@@ -162,6 +181,8 @@ const serverConfig = extend(true, {}, config, {
     __filename: false,
     __dirname: false,
   },
+
+  devtool: 'source-map',
 });
 
 export default [clientConfig, serverConfig];
