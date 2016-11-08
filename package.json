@@ -9,7 +9,7 @@
     "clean": "babel-node tools/run clean",
     "lint": "eslint src tools",
     "start": "node build/server.js",
-    "test": "mocha \"src/**/*.test.js\" --require babel-register",
+    "test": "mocha \"test/**/*.test.js\" --require babel-register",
     "test:watch": "npm run test -- --reporter min --watch"
   },
   "engines": {
@@ -26,6 +26,7 @@
     "babel-preset-latest": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
     "babel-regenerator-runtime": "^6.5.0",
+    "chai": "^3.5.0",
     "eslint": "^3.6.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
@@ -57,8 +58,7 @@
       "commonjs": true,
       "es6": true,
       "node": true,
-      "jquery": true,
-      "mocha": true
+      "jquery": true
     },
     "globals": {
       "io": true

@@ -1,0 +1,12 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "func-names": "off",
+    "prefer-arrow-callback": "off",
+    "no-unused-expressions": "off",
+    "padded-blocks": "off"
+  }
+}
