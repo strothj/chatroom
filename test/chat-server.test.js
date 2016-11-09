@@ -5,7 +5,7 @@ import ChatServer from '../src/chat-server';
 chai.should();
 const port = process.env.PORT || 8080;
 const addr = `http://localhost:${port}`;
-const opts = { multiplex: false };
+const opts = { multiplex: false, reconnection: false };
 
 const testUsernames = ['Bob', 'Jane'];
 
@@ -54,5 +54,26 @@ describe('ChatServer', () => {
       });
     });
   });
+
+  it('should fail set username if name is already taken and recommend a new one', () =>
+    new Promise(async (resolve) => {
+      await addTestUsers();
+      const client = io.connect(addr, opts);
+      client.on('recommend username', () => {
+        // Ignore recommendation given on inital connection to server.
+        client.removeAllListeners('recommend username');
+
+        client.on('recommend username', (username) => {
+          // This should be called after we attempt a bad username selection.
+          username.should.equal('guest1');
+          resolve();
+        });
+
+        client.emit('set username', 'Bob', (ok) => {
+          ok.should.equal(false); // Bob already exists as a user.
+        });
+      });
+    })
+  );
 
 });

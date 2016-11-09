@@ -14,24 +14,30 @@ class ChatServer extends EventEmitter {
     this.io.on('connection', (socket) => {
       this.recommendUsername(socket);
       socket.on('set username', (username, ok) => {
-        this.addUser(username, socket);
-        this.addMessageHandlers(username);
-        ok(true);
+        if (this.addUser(username, socket)) {
+          this.addMessageHandlers(username);
+          ok(true);
+        } else {
+          this.recommendUsername(socket);
+          ok(false);
+        }
       });
     });
   }
 
   addUser(username, socket) {
+    const exists = element => element.toLowerCase() === username.toLowerCase();
+    const usernames = Object.keys(this.users);
+    if (usernames.find(exists)) return false;
     this.users[username] = socket;
     socket.removeAllListeners('set username');
-    // this.emit('set username', username);
+    return true;
   }
 
   addMessageHandlers(username) {
     const socket = this.users[username];
     socket.on('message', (message) => {
       socket.broadcast.emit('message', { username, message });
-      // this.emit('message', { username, message });
     });
   }
 
