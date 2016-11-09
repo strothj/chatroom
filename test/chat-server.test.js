@@ -39,4 +39,20 @@ describe('ChatServer', () => {
     connectedUsers.should.deep.equal(testUsernames);
   });
 
+  it('should recieve recommended guest name on connection', (done) => {
+    const client1 = io.connect(addr, opts);
+    client1.on('recommend username', (username) => {
+      username.should.equal('guest1');
+      client1.emit('set username', username, () => {
+
+        const client2 = io.connect(addr, opts);
+        client2.on('recommend username', (username2) => {
+          username2.should.equal('guest2');
+          done();
+        });
+
+      });
+    });
+  });
+
 });

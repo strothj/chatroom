@@ -12,6 +12,7 @@ class ChatServer extends EventEmitter {
     this.io = new SocketIO(listenArg);
 
     this.io.on('connection', (socket) => {
+      this.recommendUsername(socket);
       socket.on('set username', (username, ok) => {
         this.addUser(username, socket);
         this.addMessageHandlers(username);
@@ -32,6 +33,14 @@ class ChatServer extends EventEmitter {
       socket.broadcast.emit('message', { username, message });
       // this.emit('message', { username, message });
     });
+  }
+
+  recommendUsername(socket) {
+    let nextGuest = 0;
+    do {
+      nextGuest += 1;
+    } while (this.users[`guest${nextGuest}`]);
+    socket.emit('recommend username', `guest${nextGuest}`);
   }
 
   close() {
