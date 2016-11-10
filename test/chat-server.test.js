@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080;
 const addr = `http://localhost:${port}`;
 const opts = { multiplex: false, reconnection: false };
 
-const testUsernames = ['Bob', 'Jane'];
+const testUsernames = ['Bob', 'Jane', 'John'];
 
 function addTestUsers() {
   const addUserPromises = [];
@@ -86,7 +86,7 @@ describe('ChatServer', () => {
       return new Promise((resolve) => {
         client1.on('left', (username) => {
           username.should.equal('Jane');
-          server.users.size.should.equal(1);
+          server.users.size.should.equal(testUsernames.length - 1);
           setTimeout(() => { resolve(); }, 10); // Wait to prevent race condition.
         });
 
@@ -122,6 +122,25 @@ describe('ChatServer', () => {
       });
 
       client.emit('user list');
+    });
+  });
+
+  it('send private message to user', async () => {
+    const [client1, client2, client3] = await addTestUsers();
+
+    return new Promise((resolve, reject) => {
+      client1.on('private message', (message) => {
+        message.from.should.equal('Jane');
+        message.contents.should.equal('test message');
+        // Timeout to give client2's private message handler a chance to detect spillover.
+        setTimeout(() => { resolve(); }, 10);
+      });
+
+      // Private message should only go to one user.
+      client2.on('private message', () => { reject(); });
+      client3.on('private message', () => { reject(); });
+
+      client2.emit('private message', { to: 'Bob', contents: 'test message' });
     });
   });
 

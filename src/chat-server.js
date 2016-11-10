@@ -12,15 +12,15 @@ class ChatServer {
     this.io.on('connection', this.handleConnection.bind(this));
   }
 
-  isAvailableName(username) {
+  userExists(username) {
     for (const existing of this.users.keys()) {
-      if (username.toLowerCase() === existing.toLowerCase()) return false;
+      if (username.toLowerCase() === existing.toLowerCase()) return true;
     }
-    return true;
+    return false;
   }
 
   addUser(username, socket) {
-    if (!this.isAvailableName(username)) return false;
+    if (this.userExists(username)) return false;
     this.users.set(username, socket);
     socket.removeAllListeners('set username');
     socket.broadcast.emit('join', username);
@@ -37,6 +37,9 @@ class ChatServer {
     });
     socket.on('user list', () => {
       this.handleGetUserList(socket);
+    });
+    socket.on('private message', (message) => {
+      this.handlePrivateMessage(socket, message);
     });
   }
 
@@ -72,11 +75,22 @@ class ChatServer {
     socket.emit('user list', [...this.users.keys()]);
   }
 
+  handlePrivateMessage(socket, message) {
+    if (!message || !message.to || !message.contents) return;
+    if (!this.userExists(message.to)) return;
+
+    const targetSocket = this.users.get(message.to);
+    targetSocket.emit('private message', {
+      from: this.getUsernameFromSocket(socket),
+      contents: message.contents,
+    });
+  }
+
   recommendUsername(socket) {
     let nextGuest = 0;
     do {
       nextGuest += 1;
-    } while (!this.isAvailableName(`guest${nextGuest}`));
+    } while (this.userExists(`guest${nextGuest}`));
     socket.emit('recommend username', `guest${nextGuest}`);
   }
 
