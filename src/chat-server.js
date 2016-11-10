@@ -1,58 +1,80 @@
 import SocketIO from 'socket.io';
-import EventEmitter from 'events';
 
-class ChatServer extends EventEmitter {
+class ChatServer {
 
   constructor(listenArg) {
-    super();
     if (typeof listenArg === 'number') {
       this.selfHosted = true;
     }
-    this.users = [];
-    this.io = new SocketIO(listenArg);
+    this.users = new Map();
 
-    this.io.on('connection', (socket) => {
-      this.recommendUsername(socket);
-      socket.on('set username', (username, ok) => {
-        if (this.addUser(username, socket)) {
-          this.addMessageHandlers(username);
-          ok(true);
-        } else {
-          this.recommendUsername(socket);
-          ok(false);
-        }
-      });
-    });
+    this.io = new SocketIO(listenArg);
+    this.io.on('connection', this.handleConnection.bind(this));
+  }
+
+  isAvailableName(username) {
+    for (const existing of this.users.keys()) {
+      if (username.toLowerCase() === existing.toLowerCase()) return false;
+    }
+    return true;
   }
 
   addUser(username, socket) {
-    const exists = element => element.toLowerCase() === username.toLowerCase();
-    const usernames = Object.keys(this.users);
-    if (usernames.find(exists)) return false;
-    this.users[username] = socket;
+    if (!this.isAvailableName(username)) return false;
+    this.users.set(username, socket);
     socket.removeAllListeners('set username');
+    socket.broadcast.emit('join', username);
     return true;
   }
 
   addMessageHandlers(username) {
-    const socket = this.users[username];
+    const socket = this.users.get(username);
     socket.on('message', (message) => {
       socket.broadcast.emit('message', { username, message });
     });
+    socket.on('disconnect', () => {
+      this.handleDisconnect(socket);
+    });
+  }
+
+  getUsernameFromSocket(socket) {
+    for (const [key, value] of this.users) {
+      if (value === socket) {
+        return key;
+      }
+    }
+    return null;
+  }
+
+  handleConnection(socket) {
+    this.recommendUsername(socket);
+    socket.on('set username', (username, ok) => {
+      if (this.addUser(username, socket)) {
+        this.addMessageHandlers(username);
+        ok(true);
+      } else {
+        this.recommendUsername(socket);
+        ok(false);
+      }
+    });
+  }
+
+  handleDisconnect(socket) {
+    const username = this.getUsernameFromSocket(socket);
+    this.users.delete(username);
+    socket.broadcast.emit('left', username);
   }
 
   recommendUsername(socket) {
     let nextGuest = 0;
     do {
       nextGuest += 1;
-    } while (this.users[`guest${nextGuest}`]);
+    } while (!this.isAvailableName(`guest${nextGuest}`));
     socket.emit('recommend username', `guest${nextGuest}`);
   }
 
-  close() {
-    if (this.selfHosted) {
-      this.io.close();
-    }
+  close(cb) {
+    if (this.selfHosted) this.io.close(cb);
   }
 
 }

@@ -16,7 +16,10 @@ function addTestUsers() {
     const addUserPromise = new Promise((resolve, reject) => {
       client.on('connect', () => {
         client.emit('set username', username, (ok) => {
-          if (ok) { resolve(client); } else { reject(new Error(`Failed to add user: ${username}`)); }
+          if (ok) {
+            resolve(client);
+            client.removeAllListeners();
+          } else { reject(new Error(`Failed to add user: ${username}`)); }
         });
       });
     });
@@ -33,7 +36,7 @@ describe('ChatServer', () => {
 
   it('add multiple users', async () => {
     const [client1, client2] = await addTestUsers();
-    const connectedUsers = Object.keys(server.users);
+    const connectedUsers = [...server.users.keys()];
 
     client1.should.not.equal(client2);
     connectedUsers.should.deep.equal(testUsernames);
@@ -69,11 +72,44 @@ describe('ChatServer', () => {
           resolve();
         });
 
-        client.emit('set username', 'Bob', (ok) => {
+        client.emit('set username', 'bob', (ok) => {
           ok.should.equal(false); // Bob already exists as a user.
         });
       });
     })
   );
+
+  it('should broadcast on user connection and disconnection', async () => {
+    const [client1, client2] = await addTestUsers();
+
+    async function disconnectBroadcastTest() {
+      return new Promise((resolve) => {
+        client1.on('left', (username) => {
+          username.should.equal('Jane');
+          server.users.size.should.equal(1);
+          setTimeout(() => { resolve(); }, 10); // Wait to prevent race condition.
+        });
+
+        client2.disconnect();
+      });
+    }
+
+    async function connectBroadcastTest() {
+      return new Promise((resolve) => {
+        client1.on('join', (username) => {
+          username.should.equal('Jane');
+          resolve();
+        });
+
+        client2.on('recommend username', () => {
+          client2.emit('set username', 'Jane', () => {});
+        });
+        client2.connect(addr, opts);
+      });
+    }
+
+    await disconnectBroadcastTest();
+    await connectBroadcastTest();
+  });
 
 });
