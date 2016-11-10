@@ -35,6 +35,9 @@ class ChatServer {
     socket.on('disconnect', () => {
       this.handleDisconnect(socket);
     });
+    socket.on('user list', () => {
+      this.handleGetUserList(socket);
+    });
   }
 
   getUsernameFromSocket(socket) {
@@ -63,6 +66,10 @@ class ChatServer {
     const username = this.getUsernameFromSocket(socket);
     this.users.delete(username);
     socket.broadcast.emit('left', username);
+  }
+
+  handleGetUserList(socket) {
+    socket.emit('user list', [...this.users.keys()]);
   }
 
   recommendUsername(socket) {

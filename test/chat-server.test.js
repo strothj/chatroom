@@ -112,4 +112,17 @@ describe('ChatServer', () => {
     await connectBroadcastTest();
   });
 
+  it('should return a list of users', async () => {
+    const [client] = await addTestUsers();
+
+    return new Promise((resolve) => {
+      client.on('user list', (users) => {
+        users.should.deep.equal(testUsernames);
+        resolve();
+      });
+
+      client.emit('user list');
+    });
+  });
+
 });
