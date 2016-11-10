@@ -144,4 +144,34 @@ describe('ChatServer', () => {
     });
   });
 
+  it('should send typing status', async () => {
+    const [client1, client2] = await addTestUsers();
+
+    return new Promise((resolve, reject) => {
+      server.debounceTypingInterval = 50; // Set to 50 milliseconds.
+      let typing = false;
+
+      client1.on('typing', (username) => {
+        username.should.equal('Jane');
+        typing = true;
+      });
+
+      client1.on('ended typing', (username) => {
+        username.should.equal('Jane');
+        typing = false;
+      });
+
+      // Should be typing since a typing event was sent.
+      setTimeout(() => { if (!typing) reject('40'); }, 40);
+      // Should still be typing because we sent another typing event.
+      setTimeout(() => { if (!typing) reject('90'); }, 90);
+      // Typing event should have expired since it wasn't renewed
+      setTimeout(() => { if (typing) reject('105'); else resolve(); }, 135);
+
+      client2.emit('typing'); // Tell others we're typing
+      setTimeout(() => { client2.emit('typing'); }, 45); // Tell others we're still typing, cancel 50 ms from now.
+
+    });
+  });
+
 });

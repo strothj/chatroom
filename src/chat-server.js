@@ -1,4 +1,5 @@
 import SocketIO from 'socket.io';
+import debounce from 'lodash.debounce';
 
 class ChatServer {
 
@@ -7,6 +8,8 @@ class ChatServer {
       this.selfHosted = true;
     }
     this.users = new Map();
+    this.userTypingDebounce = new Map();
+    this.debounceTypingInterval = 100;
 
     this.io = new SocketIO(listenArg);
     this.io.on('connection', this.handleConnection.bind(this));
@@ -40,6 +43,9 @@ class ChatServer {
     });
     socket.on('private message', (message) => {
       this.handlePrivateMessage(socket, message);
+    });
+    socket.on('typing', () => {
+      this.handleTyping(socket);
     });
   }
 
@@ -84,6 +90,21 @@ class ChatServer {
       from: this.getUsernameFromSocket(socket),
       contents: message.contents,
     });
+  }
+
+  handleTyping(socket) {
+    const username = this.getUsernameFromSocket(socket);
+    if (!this.userTypingDebounce.has(username)) {
+      socket.broadcast.emit('typing', username);
+      this.userTypingDebounce.set(username, debounce(
+        function debounceDoneTyping() { // eslint-disable-line prefer-arrow-callback
+          socket.broadcast.emit('ended typing', username);
+          this.userTypingDebounce.delete(username);
+        }.bind(this), this.debounceTypingInterval
+      ));
+    } else {
+      this.userTypingDebounce.get(username)();
+    }
   }
 
   recommendUsername(socket) {
