@@ -24,6 +24,10 @@ const config = {
   module: {
     loaders: [
       {
+        test: /\.vue$/,
+        loader: 'vue',
+      },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [
@@ -69,7 +73,7 @@ const config = {
   resolve: {
     root: path.resolve(__dirname, '../src'),
     modulesDirectories: ['node_modules'],
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.json'],
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.json', '.vue'],
   },
 };
 
