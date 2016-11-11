@@ -1,20 +1,25 @@
 <template>
-  <div id="app">
+  <div>
     <username-picker
       :visible="userPickerVisible"
       :suggestedUsername="suggestedUsername"
       :error="userPickerError"
-      @namePicked="namePicked">
+      @namePicked="namePicked"></username-picker>
+    <chatroom
+      :username="username"
+      @message="sendMessage"></chatroom>
   </div>
 </template>
 
 <script>
 import UsernamePicker from './components/UsernamePicker.vue';
+import Chatroom from './components/Chatroom.vue';
 
 export default {
   name: 'app',
   data: () => ({
     socket: null,
+    username: '',
     userPickerVisible: false,
     userPickerError: '',
     suggestedUsername: '',
@@ -22,6 +27,7 @@ export default {
   }),
   components: {
     UsernamePicker,
+    Chatroom,
   },
   methods: {
     namePicked: function namePicked(username) {
@@ -29,10 +35,14 @@ export default {
         if (ok) {
           this.userPickerVisible = false;
           this.chatroomVisible = true;
+          this.username = username;
         } else {
           this.userPickerError = `Username "${username}" is not available.`;
         }
       });
+    },
+    sendMessage: function sendMessage(message) {
+      this.socket.emit('message', message);
     },
   },
   mounted: function created() {
@@ -40,6 +50,10 @@ export default {
     this.socket.on('recommend username', (username) => {
       this.suggestedUsername = username;
       this.userPickerVisible = true;
+    });
+    const that = this;
+    this.socket.on('message', (message) => {
+      that.$broadcast('message', message);
     });
   },
 };

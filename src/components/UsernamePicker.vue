@@ -53,7 +53,6 @@ export default {
   },
   watch: {
     suggestedUsername: function suggestedUsername(val) {
-      console.log('suggestedUsername updated', val);
       this.$refs.usernameInput.value = val;
     },
     visible: function visible(val) {
