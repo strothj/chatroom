@@ -42,20 +42,32 @@ describe('ChatServer', () => {
     connectedUsers.should.deep.equal(testUsernames);
   });
 
-  it('should recieve recommended guest name on connection', (done) => {
-    const client1 = io.connect(addr, opts);
-    client1.on('recommend username', (username) => {
-      username.should.equal('guest1');
-      client1.emit('set username', username, () => {
-
-        const client2 = io.connect(addr, opts);
-        client2.on('recommend username', (username2) => {
-          username2.should.equal('guest2');
-          done();
+  it('should recieve recommended guest name on connection', async () => {
+    async function takeFirstGuestName() {
+      return new Promise((resolve) => {
+        const client1 = io.connect(addr, opts);
+        client1.on('recommend username', (username) => {
+          username.should.equal('guest1');
+          client1.emit('set username', username, (ok) => {
+            ok.should.equal(true);
+            resolve();
+          });
         });
+      });
+    }
 
+    await takeFirstGuestName();
+    return new Promise((resolve) => {
+      const client2 = io.connect(addr, opts);
+      client2.on('recommend username', (username) => {
+        username.should.equal('guest2');
+        client2.emit('set username', username, (ok) => {
+          ok.should.equal(true);
+          resolve();
+        });
       });
     });
+
   });
 
   it('should fail set username if name is already taken and recommend a new one', () =>

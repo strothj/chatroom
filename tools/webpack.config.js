@@ -199,3 +199,4 @@ const serverConfig = extend(true, {}, config, {
 });
 
 export default [clientConfig, serverConfig];
+export { serverConfig as config };
