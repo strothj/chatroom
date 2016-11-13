@@ -5,83 +5,26 @@
   "author": "strothj <jason@jasons.io>",
   "license": "MIT",
   "scripts": {
-    "build": "babel-node tools/run build",
-    "clean": "babel-node tools/run clean",
-    "lint": "eslint --ext .js,.vue src tools",
+    "build": "babel-node build/run build",
+    "clean": "babel-node build/run clean",
+    "lint": "eslint src build",
     "start": "node build/server.js",
-    "test": "mocha-webpack --include babel-regenerator-runtime --webpack-config tools/webpack.config-test.babel.js test/**/*.test.js",
+    "test": "mocha --include babel-regenerator-runtime test/**/*.test.js",
     "test:watch": "npm run test -- --reporter min --watch"
   },
   "engines": {
     "node": ">=6.9"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "^3.5.0",
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.7",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
-    "babel-preset-latest": "^6.16.0",
-    "babel-preset-stage-0": "^6.16.0",
-    "babel-regenerator-runtime": "^6.5.0",
-    "chai": "^3.5.0",
-    "css-loader": "^0.25.0",
-    "eslint": "^3.6.0",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-html": "^1.6.0",
-    "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-react": "^6.3.0",
-    "extend": "^3.0.0",
-    "glob": "^7.1.1",
-    "html-webpack-plugin": "^2.24.1",
-    "karma": "^1.3.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-mocha": "^1.3.0",
-    "mkdirp": "^0.5.1",
-    "mocha": "^3.1.2",
-    "mocha-webpack": "^0.7.0",
-    "rimraf": "^2.5.4",
-    "socket.io-client": "^1.5.1",
-    "webpack": "^1.13.3"
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0"
   },
   "dependencies": {
     "express": "^4.14.0",
     "lodash.debounce": "^4.0.8",
-    "socket.io": "^1.5.1",
-    "source-map-support": "^0.4.6",
-    "vue": "^2.0.5",
-    "vue-loader": "^9.9.0"
-  },
-  "babel": {
-    "plugins": [
-      "transform-es2015-modules-commonjs",
-      "transform-async-to-generator",
-      "syntax-async-functions"
-    ]
-  },
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "commonjs": true,
-      "es6": true,
-      "node": true,
-      "jquery": true
-    },
-    "globals": {
-      "io": true
-    },
-    "plugins": [
-      "html"
-    ],
-    "parserOptions": {
-      "sourceType": "module"
-    },
-    "rules": {},
-    "extends": [
-      "airbnb"
-    ]
+    "socket.io": "^1.5.1"
   }
 }
