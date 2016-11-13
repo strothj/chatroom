@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Chatbox from './Chatbox.vue';
+import Chatbox from './Chatbox';
 
 export default {
   props: ['username'],
