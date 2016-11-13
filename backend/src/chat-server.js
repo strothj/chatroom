@@ -16,9 +16,10 @@ class ChatServer {
   }
 
   userExists(username) {
-    for (const existing of this.users.keys()) {
-      if (username.toLowerCase() === existing.toLowerCase()) return true;
-    }
+    const users = [...this.users.keys()];
+    if (users.find(
+      existingUser => existingUser.toLowerCase() === username.toLowerCase())
+    ) return true;
     return false;
   }
 
@@ -50,11 +51,9 @@ class ChatServer {
   }
 
   getUsernameFromSocket(socket) {
-    for (const [key, value] of this.users) {
-      if (value === socket) {
-        return key;
-      }
-    }
+    const entries = [...this.users.entries()];
+    const match = entries.find(entry => entry[1] === socket);
+    if (match) return match[0];
     return null;
   }
 
@@ -100,7 +99,7 @@ class ChatServer {
         function debounceDoneTyping() { // eslint-disable-line prefer-arrow-callback
           socket.broadcast.emit('ended typing', username);
           this.userTypingDebounce.delete(username);
-        }.bind(this), this.debounceTypingInterval
+        }.bind(this), this.debounceTypingInterval,
       ));
     } else {
       this.userTypingDebounce.get(username)();

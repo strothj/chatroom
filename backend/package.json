@@ -9,18 +9,25 @@
     "clean": "babel-node build/run clean",
     "lint": "eslint src build",
     "start": "node build/server.js",
-    "test": "mocha --include babel-regenerator-runtime test/**/*.test.js",
+    "test": "mocha",
     "test:watch": "npm run test -- --reporter min --watch"
   },
   "engines": {
     "node": ">=6.9"
   },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-preset-latest": "^6.16.0",
+    "babel-regenerator-runtime": "^6.5.0",
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
     "eslint": "^3.9.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.6.0"
+    "eslint-plugin-react": "^6.6.0",
+    "mocha": "^3.1.2"
   },
   "dependencies": {
     "express": "^4.14.0",
