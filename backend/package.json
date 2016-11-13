@@ -5,10 +5,9 @@
   "author": "strothj <jason@jasons.io>",
   "license": "MIT",
   "scripts": {
-    "build": "babel-node build/run build",
-    "clean": "babel-node build/run clean",
+    "build": "babel-node build/build",
     "lint": "eslint src build",
-    "start": "node build/server.js",
+    "start": "node dist/main.bundle.js",
     "test": "mocha",
     "test:watch": "npm run test -- --reporter min --watch"
   },
@@ -18,7 +17,9 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
-    "babel-preset-latest": "^6.16.0",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-preset-es2017": "^6.16.0",
     "babel-regenerator-runtime": "^6.5.0",
     "babel-register": "^6.18.0",
     "chai": "^3.5.0",
@@ -27,7 +28,10 @@
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "shelljs": "^0.7.5",
+    "webpack": "^1.13.3",
+    "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
     "express": "^4.14.0",
