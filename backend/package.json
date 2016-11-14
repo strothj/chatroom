@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel-node build/build",
+    "dev": "PORT=8000 babel-node src/main.js",
     "lint": "eslint src build",
     "start": "node dist/main.bundle.js",
     "test": "mocha",
