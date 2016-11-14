@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Message from 'src/components/Message';
+import Message from 'components/Message';
 
 describe('Message', () => {
 
