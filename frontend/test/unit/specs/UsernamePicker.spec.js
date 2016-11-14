@@ -15,6 +15,15 @@ describe('UsernamePicker', () => {
     vm.submit();
   });
 
+  it('setting username property sets username form field', (done) => {
+    const vm = new Vue(UsernamePicker).$mount();
+    vm.username = 'Bob';
+    vm.$nextTick(function cb() {
+      this.$refs.username.value.should.equal('Bob');
+      done();
+    });
+  });
+
   describe('jQuery modal', () => {
     let mount;
     let usernamePicker;
