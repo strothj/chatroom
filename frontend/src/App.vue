@@ -3,6 +3,7 @@
     <username-picker
       ref="usernamePicker"
       :username-needed="usernameNeeded"
+      :error="usernameError"
       @usernameSelected="usernameSelected"></username-picker>
   </div>
 
@@ -16,6 +17,7 @@ export default {
   data: () => ({
     socket: null,
     usernameNeeded: false,
+    usernameError: '',
   }),
   mounted: function mounted() {
     if (this.initialSocket) {
@@ -32,8 +34,9 @@ export default {
   },
   methods: {
     usernameSelected: function usernameSelected(username) {
-      this.socket.emit('set username', username, (ok) => { // eslint-disable-line
-        this.usernameNeeded = false;
+      this.socket.emit('set username', username, (ok) => {
+        this.usernameNeeded = !ok;
+        if (!ok) this.usernameError = `Username "${username}" is not available.`;
       });
     },
   },

@@ -44,8 +44,24 @@ describe('App', () => {
         });
       });
 
+      it('shows error message on username not available', (done) => {
+        socket.on('set username', (username, ok) => {
+          ok(false);
+          vm.$nextTick(() => {
+            username.should.equal(username);
+            usernamePicker.visible.should.equal(true);
+            usernamePicker.$refs.errorMessage.textContent.should.equal('Username "Bob" is not available.');
+            done();
+          });
+        });
+        socket.emit('recommend username', 'Bob');
+        vm.$nextTick(() => {
+          usernamePicker.$emit('usernameSelected', 'Bob');
+        });
+      });
+
     }); // UsernamePicker
 
   }); // socket
 
-});
+}); // App

@@ -5,13 +5,13 @@ describe('UsernamePicker', () => {
 
   it('submitting form emits event', (done) => {
     const vm = new Vue(UsernamePicker).$mount();
-    $(vm.$el).find('input').val('Bob');
 
     vm.$on('usernameSelected', (username) => {
       username.should.equal('Bob');
       done();
     });
 
+    vm.username = 'Bob';
     vm.submit();
   });
 

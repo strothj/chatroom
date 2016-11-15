@@ -10,7 +10,7 @@
           @submit.prevent="submit">
 
           <div class="input-field col s12">
-            <input id="new_username" ref="username" type="text" placeholder="Username">
+            <input v-model="username" id="new_username" ref="username" type="text" placeholder="Username">
             <label for="new_username">Username</label>
           </div>
 
@@ -18,7 +18,7 @@
       </div>
 
       <div class="row">
-        <span>{{ error }}</span>
+        <span ref="errorMessage">{{ error }}</span>
       </div>
 
     </div>
@@ -27,18 +27,16 @@
 
 <script>
 export default {
-  props: ['error', 'usernameNeeded'],
+  props: ['error', 'usernameNeeded', 'initialUsername'],
   data: () => ({
     isVisible: false,
+    username: '',
   }),
   mounted: function mount() {
+    this.username = this.initialUsername;
     $(this.$refs.modal).modal({ dismissible: false });
   },
   computed: {
-    username: {
-      get: function getUsername() { return this.$refs.username.value; },
-      set: function setUsername(val) { this.$refs.username.value = val; },
-    },
     visible: function visible() {
       return this.isVisible;
     },
