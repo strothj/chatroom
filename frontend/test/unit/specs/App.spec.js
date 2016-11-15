@@ -4,19 +4,48 @@ import EventEmitter from 'events';
 
 describe('App', () => {
 
-  it('shows UsernamePicker on "recommend username" event', (done) => {
+  describe('socket', () => {
+    let socket;
+    let vm;
 
-    const ee = new EventEmitter();
-    const Ctor = Vue.extend(App);
-    const vm = new Ctor({ propsData: { initialSocket: ee } }).$mount();
-
-    vm.$refs.usernamePicker.visible.should.equal(false);
-    ee.emit('recommend username', 'Bob');
-    vm.$nextTick(function cb() {
-      this.$refs.usernamePicker.visible.should.equal(true);
-      done();
+    beforeEach(() => {
+      socket = new EventEmitter();
+      const Ctor = Vue.extend(App);
+      vm = new Ctor({ propsData: { initialSocket: socket } }).$mount();
     });
 
-  });
+    describe('UsernamePicker', () => {
+      let usernamePicker;
+
+      beforeEach(() => { usernamePicker = vm.$refs.usernamePicker; });
+
+      it('shows UsernamePicker on "recommend username" event', (done) => {
+        usernamePicker.visible.should.equal(false);
+        socket.emit('recommend username', 'Bob');
+        vm.$nextTick(() => {
+          usernamePicker.visible.should.equal(true);
+          done();
+        });
+      });
+
+      it('sends selected username from UsernamePicker', (done) => {
+        socket.on('set username', (username, ok) => {
+          username.should.equal('Bob');
+          ok(true);
+          Vue.nextTick(() => {
+            usernamePicker.visible.should.equal(false);
+            done();
+          });
+        });
+        socket.emit('recommend username', 'Bob');
+        vm.$nextTick(() => {
+          usernamePicker.visible.should.equal(true);
+          usernamePicker.$emit('usernameSelected', 'Bob');
+        });
+      });
+
+    }); // UsernamePicker
+
+  }); // socket
 
 });

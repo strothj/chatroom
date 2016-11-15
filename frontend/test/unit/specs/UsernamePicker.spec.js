@@ -7,7 +7,7 @@ describe('UsernamePicker', () => {
     const vm = new Vue(UsernamePicker).$mount();
     $(vm.$el).find('input').val('Bob');
 
-    vm.$on('submit', (username) => {
+    vm.$on('usernameSelected', (username) => {
       username.should.equal('Bob');
       done();
     });

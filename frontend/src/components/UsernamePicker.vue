@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     submit: function submit() {
-      this.$emit('submit', this.username);
+      this.$emit('usernameSelected', this.username);
     },
   },
 };
