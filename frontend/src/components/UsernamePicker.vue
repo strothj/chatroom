@@ -2,13 +2,16 @@
   <div ref="modal" class="modal">
     <div class="modal-content">
 
-      <h4>Pick your username</h4>
+      <div class="row">
+        <h4>Pick your username</h4>
+      </div>
       <div class="row">
         <form class="col s12"
           @submit.prevent="submit">
 
           <div class="input-field col s12">
-            <label>Username<input ref="username" type="text" placeholder="Username"></label>
+            <input id="new_username" ref="username" type="text" placeholder="Username">
+            <label for="new_username">Username</label>
           </div>
 
         </form>
@@ -24,20 +27,31 @@
 
 <script>
 export default {
-  props: ['error'],
+  props: ['error', 'usernameNeeded'],
+  data: () => ({
+    isVisible: false,
+  }),
   mounted: function mount() {
-    $(this.$refs.modal).modal();
+    $(this.$refs.modal).modal({ dismissible: false });
   },
   computed: {
     username: {
       get: function getUsername() { return this.$refs.username.value; },
       set: function setUsername(val) { this.$refs.username.value = val; },
     },
-    usernameNeeded: {
-      set: function usernameNeeded(val) {
-        if (val) $(this.$refs.modal).modal('open');
-        else $(this.$refs.modal).modal('close');
-      },
+    visible: function visible() {
+      return this.isVisible;
+    },
+  },
+  watch: {
+    usernameNeeded: function usernameNeeded(val) {
+      if (val) {
+        $(this.$refs.modal).modal('open');
+        this.isVisible = true;
+      } else {
+        $(this.$refs.modal).modal('close');
+        this.isVisible = false;
+      }
     },
   },
   methods: {

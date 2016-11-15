@@ -1,5 +1,8 @@
 <template>
   <div>
+    <username-picker
+      ref="usernamePicker"
+      :username-needed="usernameNeeded"></username-picker>
     <!--<username-picker
       :visible="userPickerVisible"
       :suggestedUsername="suggestedUsername"
@@ -13,10 +16,25 @@
 </template>
 
 <script>
-// import UsernamePicker from 'components/UsernamePicker';
+import UsernamePicker from 'components/UsernamePicker';
 // import Chatroom from 'components/Chatroom';
 
 export default {
+  props: ['initialSocket'],
+  data: () => ({
+    socket: null,
+    usernameNeeded: false,
+  }),
+  mounted: function mounted() {
+    if (this.initialSocket) {
+      this.socket = this.initialSocket;
+    } else {
+      this.socket = io();
+    }
+    this.socket.on('recommend username', () => {
+      this.usernameNeeded = true;
+    });
+  },
   // name: 'app',
   // data: () => ({
   //   socket: null,
@@ -26,10 +44,10 @@ export default {
   //   suggestedUsername: '',
   //   chatroomVisible: false,
   // }),
-  // components: {
-  //   UsernamePicker,
+  components: {
+    UsernamePicker,
   //   Chatroom,
-  // },
+  },
   // methods: {
   //   namePicked: function namePicked(username) {
   //     this.socket.emit('set username', username, (ok) => {
