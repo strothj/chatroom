@@ -4,7 +4,8 @@
       ref="messages"
       v-for="message in messages"
       :username="message.username"
-      :contents="message.contents">
+      :contents="message.message"
+      :currentUser="message.currentUser">
     </message>
   </div>
 </template>

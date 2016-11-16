@@ -42,6 +42,9 @@ export default {
     },
   },
   watch: {
+    initialUsername: function initialUsername(val) {
+      this.username = val;
+    },
     usernameNeeded: function usernameNeeded(val) {
       if (val) {
         $(this.$refs.modal).modal('open');

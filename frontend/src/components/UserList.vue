@@ -10,7 +10,7 @@
         </a>
       </li>
     </ul>
-    <a href="#" data-activates="userList" class="button-collapse">asdf</a>
+    <a href="#" data-activates="userList" class="button-collapse"></a>
   </div>
 </template>
 

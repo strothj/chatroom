@@ -1,12 +1,12 @@
 <template>
-  <div class="card-panel blue message">
+  <div v-bind:class="{ blue: currentUser }" class="card-panel">
     <div class="chip message-username">{{ username }}</div>
-    <span class="white-text message-contents">{{ contents }}</span>
+    <span v-bind:class="{ 'white-text': currentUser, 'black-text': !currentUser }">{{ contents }}</span>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['username', 'contents'],
+  props: ['username', 'contents', 'currentUser'],
 };
 </script>
