@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="message-list">
     <message
       ref="messages"
       v-for="message in messages"
@@ -19,3 +19,10 @@ export default {
   },
 };
 </script>
+
+<style lang="less">
+.message-list {
+  max-height: 90%;
+  overflow: auto;
+}
+</style>

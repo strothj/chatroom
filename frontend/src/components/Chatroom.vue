@@ -1,33 +1,15 @@
 <template>
-  <div class="container">
+  <div class="container chatroom">
     <div class="row">
-      <div class="s12 m8">
-        <chatbox
-          :username="username"
-          @message="sendMessage"></chatbox>
-      </div>
-      <div class="s12 m4">
-        <userlist></userlist>
+      <div class="col s12">
+        <slot name="messageList"></slot>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import Chatbox from './Chatbox';
-
-export default {
-  props: ['username'],
-  data: () => ({
-
-  }),
-  components: {
-    Chatbox,
-  },
-  methods: {
-    sendMessage: function sendMessage(message) {
-      this.$emit('message', message);
-    },
-  },
-};
-</script>
+<style lang="less">
+.chatroom {
+  padding-bottom: 85px;
+}
+</style>
